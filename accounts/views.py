@@ -26,10 +26,10 @@ def login_view(request):
     elif request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username_or_email = form.cleaned_data['username_or_email']
+            email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            if "@" in username_or_email:
-                username = User.objects.get(email=username_or_email).username
+            if "@" in email:
+                username = User.objects.get(email=email)
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     login(request, user)
@@ -38,7 +38,7 @@ def login_view(request):
                     messages.add_message(request, messages.ERROR, "Login failed please check you input data and try again ")
                     return redirect(request.path_info)
             else:
-                user = authenticate(username=username_or_email, password=password)
+                user = authenticate(username=email, password=password)
                 if user is not None:
                     login(request, user)
                     return redirect("/")
